@@ -1,28 +1,33 @@
 <template>
-  <p class="login">
-    <el-form :model="AccountForm" :rules="rules" ref="AccountForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-      <h3 class="title">系统注册</h3>
+  <p class="logon">
+    <el-form :model="logonAccount" :rules="rules" ref="logonAccount" label-position="left" label-width="0px" class="demo-ruleForm logon-container">
+      <h3 class="title">注册账号</h3>
       <el-form-item prop="account">
-        <el-input type="text" v-model="AccountForm.account" auto-complete="off" placeholder="账号"></el-input>
+        <el-input type="text" v-model="logonAccount.account" auto-complete="off" placeholder="账号"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" v-model="AccountForm.password" auto-complete="off" placeholder="密码"></el-input>
+        <el-input type="password" v-model="logonAccount.password" auto-complete="off" placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item prop="email">
-        <el-input type="email" v-model="AccountForm.email" auto-complete="off" placeholder="邮箱"></el-input>
+        <el-input type="email" v-model="logonAccount.email" auto-complete="off" placeholder="邮箱"></el-input>
       </el-form-item>
 
-      <el-form-item style="width:100%;">
-        <el-button type="primary" style="width:100%;" @click="LogonSubmit" :loading="logoning">注册</el-button>
-        <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
-      </el-form-item>
+      <el-row type="flex" class="row-bg" :gutter="0">
+        <el-col :span="24">
+          <el-form-item style="width:100%;">
+            <el-button type="primary" style="width:100%;" @click.native.prevent="logonSubmit" :loading="logoning">注册</el-button>
+            <!--<el-button @click="resetForm('logonAccount')">重置</el-button>-->
+          </el-form-item>
+          <span v-on:click="loginSubmit">已有账号？马上<el-button type="text" abled>登录</el-button></span>
+        </el-col>
+      </el-row>
     </el-form>
   </p>
 
 </template>
 
 <script>
-  import { requestLogin, requestRegister } from '@/api/api';
+  import { requestLogin, requestLogon } from '@/axios/api';
   import logon from '@/components/logon'
   //import NProgress from 'nprogress'
   export default {
@@ -40,9 +45,10 @@
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         },
-        AccountForm: {
-          account: 'admin',
-          password: '123456'
+        logonAccount: {
+          account: '',
+          password: '',
+          email: ''
         },
         rules: {
           account: [
@@ -56,19 +62,21 @@
       };
     },
     methods: {
-      handleReset2() {
-        this.$refs.AccountForm.resetFields();
+      resetForm(formName) {
+        this.$refs[formName].resetFields()
       },
       loginSubmit(event) {
+        this.logining = true;
+        this.$router.push({ path: '/login' });
+      },
+      logonSubmit(event) {
         var _this = this;
-        this.$refs.AccountForm.validate((valid) => {
+        this.$refs.logonAccount.validate((valid) => {
           if (valid) {
-            //_this.$router.replace('/table');
-            this.logining = true;
-            //NProgress.start();
-            var loginParams = { username: this.AccountForm.account, password: this.AccountForm.password };
-            requestLogin(loginParams).then(data => {
-              this.logining = false;
+            this.logoning = true;
+            var logonParams = { username: this.logonAccount.account, password: this.logonAccount.password, email: this.logonAccount.email };
+            requestLogon(logonParams).then(data => {
+              this.logoning = false;
               //NProgress.done();
               let { msg, code, user } = data;
               if (code !== 200) {
@@ -78,7 +86,7 @@
                 });
               } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/table' });
+                this.$router.push({ path: '/login' });
               }
             });
           } else {
@@ -86,9 +94,6 @@
             return false;
           }
         });
-      },
-      LogonSubmit(event) {
-        this.$router.push({ path: '/logon' });
       }
     }
   }
@@ -96,7 +101,7 @@
 </script>
 
 <style lang="scss" scoped>
-.login-container {
+.logon-container {
   box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
   -webkit-border-radius: 5px;
   border-radius: 5px;
