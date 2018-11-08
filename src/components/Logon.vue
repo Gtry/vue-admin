@@ -1,64 +1,54 @@
 <template>
-  <el-form :model="AccountForm" :rules="rules" ref="AccountForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-    <h3 class="title">系统登录</h3>
-    <el-form-item prop="account">
-      <el-input type="text" v-model="AccountForm.account" auto-complete="off" placeholder="账号"></el-input>
-    </el-form-item>
-    <el-form-item prop="checkPass">
-      <el-input type="password" v-model="AccountForm.checkPass" auto-complete="off" placeholder="密码"></el-input>
-    </el-form-item>
-    </el-form-item>
-    <el-form-item prop="email">
-      <el-input type="email" v-model="ruleForm2.email" auto-complete="off" placeholder="邮箱"></el-input>
-    </el-form-item>
+  <p class="login">
+    <el-form :model="AccountForm" :rules="rules" ref="AccountForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+      <h3 class="title">系统注册</h3>
+      <el-form-item prop="account">
+        <el-input type="text" v-model="AccountForm.account" auto-complete="off" placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="AccountForm.password" auto-complete="off" placeholder="密码"></el-input>
+      </el-form-item>
+      <el-form-item prop="email">
+        <el-input type="email" v-model="AccountForm.email" auto-complete="off" placeholder="邮箱"></el-input>
+      </el-form-item>
 
-    <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="LogonSubmit" :loading="logoning">注册</el-button>
-      <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
-    </el-form-item>
-    <el-row type="flex" class="row-bg" :gutter="20">
-      <el-col :span="12">
-        <el-form-item style="width:100%;">
-          <el-button type="primary" style="width:100%;" @click.native.prevent="loginSubmit" :loading="logining">登录</el-button>
-          <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item style="width:100%;">
-          <el-button type="primary" style="width:100%;" @click.native.prevent="LogonSubmit" :loading="logoning">注册</el-button>
-          <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
-        </el-form-item>
-      </el-col>
-    </el-row>
-  </el-form>
+      <el-form-item style="width:100%;">
+        <el-button type="primary" style="width:100%;" @click="LogonSubmit" :loading="logoning">注册</el-button>
+        <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+      </el-form-item>
+    </el-form>
+  </p>
+
 </template>
 
 <script>
   import { requestLogin, requestRegister } from '@/api/api';
+  import logon from '@/components/logon'
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
+        logining: false,
+        logoning: false,
         note: {
           position:"absolute",
           top:"0px",
           left:"0px",
           width: "100%",
           height:"100%",
-          backgroundImage: "url(" + require("@/assets/logo.png") + ")",
+          backgroundImage: "url(" + require("@/assets/login.jpg") + ")",
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         },
-        logining: false,
         AccountForm: {
           account: 'admin',
-          checkPass: '123456'
+          password: '123456'
         },
         rules: {
           account: [
             { required: true, message: '请输入账号', trigger: 'blur' },
           ],
-          checkPass: [
+          password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
           ]
         },
@@ -69,14 +59,14 @@
       handleReset2() {
         this.$refs.AccountForm.resetFields();
       },
-      loginSubmit(ev) {
+      loginSubmit(event) {
         var _this = this;
         this.$refs.AccountForm.validate((valid) => {
           if (valid) {
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
-            var loginParams = { username: this.AccountForm.account, password: this.AccountForm.checkPass };
+            var loginParams = { username: this.AccountForm.account, password: this.AccountForm.password };
             requestLogin(loginParams).then(data => {
               this.logining = false;
               //NProgress.done();
@@ -97,9 +87,8 @@
           }
         });
       },
-      LogonSubmit() {
-        this.$router.replace('/Logon');
-        //  alert("now this is a test");
+      LogonSubmit(event) {
+        this.$router.push({ path: '/logon' });
       }
     }
   }
@@ -107,25 +96,25 @@
 </script>
 
 <style lang="scss" scoped>
-  .login-container {
-    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    background-clip: padding-box;
-    margin: 180px auto;
-    width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
-    .title {
-      margin: 0px auto 40px auto;
-      text-align: center;
-      color: #505458;
-    }
-    .remember {
-      margin: 0px 0px 35px 0px;
-    }
+.login-container {
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin: 180px auto;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px #cac6c6;
+  .title {
+    margin: 0px auto 40px auto;
+    text-align: center;
+    color: #505458;
   }
+  .remember {
+    margin: 0px 0px 35px 0px;
+  }
+}
 </style>

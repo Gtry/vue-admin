@@ -18,19 +18,20 @@ Vue.use(ElementUI)
 Vue.use(Vuex)
 
 //NProgress.configure({ showSpinner: false });
-
+/*
 router.beforeEach((to, from, next) => {
   //NProgress.start();
-  if (to.path == '/login') {
+  if (to.path === '/login') {
     sessionStorage.removeItem('user');
   }
   let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
-    next({ path: '/login' })
+  if (!user && to.path !== '/login') {
+    next({ path: '/logon' })
   } else {
     next()
   }
 })
+*/
 
 //router.afterEach(transition => {
 //NProgress.done();

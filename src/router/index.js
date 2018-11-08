@@ -16,6 +16,7 @@ import echarts from '@/components/charts/echarts'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
+    mode: 'history',
     routes: [
         {
             path: '/login',
