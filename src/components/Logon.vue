@@ -27,9 +27,7 @@
 </template>
 
 <script>
-  import { requestLogin, requestLogon } from '@/axios/api';
-  import logon from '@/components/logon'
-  //import NProgress from 'nprogress'
+  import { requestLogon } from '@/axios/api';
   export default {
     data() {
       return {
